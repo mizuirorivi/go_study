@@ -19,6 +19,36 @@ func sayHelloName(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello astaxie!")
 }
 
+// func (srv *Server) Serve(l net.Listener) error {
+// 	defer l.Close()
+// 	var tempDelay time.Duration
+// 	for {
+// 		rw, e := l.Accept()
+// 		if e != nil {
+// 			if ne, ok := e.(net.Error); ok && ne.Temporary() {
+// 				if tempDelay == 0 {
+// 					tempDelay = 5 * time.Millisecond
+// 				} else {
+// 					tempDelay *= 2
+// 				}
+// 				if max := 1 * time.Second; tempDelay > max {
+// 					tempDelay = max
+// 				}
+// 				log.Printf("http: Accept error: %v; retrying in %v", e, tempDelay)
+// 				time.Sleep(tempDelay)
+// 				continue
+// 			}
+// 			return e
+// 		}
+// 		tempDelay = 0
+// 		c, err := srv.newConn(rw)
+// 		if err != nil {
+// 			continue
+// 		}
+// 		go c.serve()
+// 	}
+// }
+
 func main() {
 	http.HandleFunc("/", sayHelloName)
 	err := http.ListenAndServe(":9090", nil)
