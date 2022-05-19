@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  sqlite3:
+    container_name: sqlite3_container
+    stdin_open: true
+    tty: true
+    build: 
+      dockerfile: ./Dockerfile
+      context: .
+    volumes:
+      - ./db:/root/db/
+    environment:
+      SQLITE3_PASSWORD: t3st
+      SQLITE3_USER: user
+      SQLITE3_DB: mydb
+    restart: unless-stopped
