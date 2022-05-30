@@ -1,26 +1,20 @@
 package router
 
 import (
-	"github.com/mizuirorivi/session_study/session"
+	"fmt"
 	"net/http"
 	"text/template"
 )
 
-/**
-show the login page
-*/
-func login(w http.ResponseWriter, r *http.Request) {
-	sess := session.GetGlobalSesion().SessionStart(w, r)
-	// parse form data in request
-	r.ParseForm()
+func Login(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("method:", r.Method)
 	if r.Method == "GET" {
-		t, _ := template.ParseFiles("login.gtpl")
-		w.Header().Set("Content-Type", "text/html")
-		t.Execute(w, sess.Get("username"))
-
+		t, _ := template.ParseFiles("pages/login.gtpl")
+		t.Execute(w, nil)
 	} else {
-		// if not get method
-		sess.Set("username", r.Form["username"])
-		http.Redirect(w, r, "/", 302)
+		r.ParseForm()
+		fmt.Println("username:", r.Form["username"])
+		fmt.Println("password:", r.Form["password"])
+
 	}
 }
