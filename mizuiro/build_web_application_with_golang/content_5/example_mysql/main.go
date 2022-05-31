@@ -11,11 +11,11 @@ import (
 func main() {
 
 	db, err := sql.Open("mysql", "root:t3st@tcp(127.0.0.1:3306)/mydb")
-	defer db.Close()
-
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer db.Close()
+
 	stmtOut, err := db.Prepare("SELECT * from user")
 	if err != nil {
 		panic(err.Error()) // proper error handling instead of panic in your app
