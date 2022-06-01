@@ -40,7 +40,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		}
 
 		http.SetCookie(w, c)
-		w.WriteHeader(http.StatusOK)
+
 		user := &db.User{
 			SessionId: session_id,
 			Name:      r.Form["username"][0],
@@ -50,5 +50,8 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Fatal(err)
 		}
+
+		t, _ := template.ParseFiles("pages/login.gtpl")
+		t.Execute(w, nil)
 	}
 }
