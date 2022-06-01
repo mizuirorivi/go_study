@@ -85,7 +85,7 @@ func Delete(sessionid string) error {
 	if err != nil {
 		log.Fatal(err)
 	}
-	stmt, err := db.Prepare("delete * from user where sessionid = ? limit 1")
+	stmt, err := db.Prepare("delete from user where sessionid = ?")
 	if err != nil {
 		log.Fatal(err)
 	}
