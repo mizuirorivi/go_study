@@ -51,7 +51,6 @@ func Register(w http.ResponseWriter, r *http.Request) {
 			log.Fatal(err)
 		}
 
-		t, _ := template.ParseFiles("pages/login.gtpl")
-		t.Execute(w, nil)
+		http.Redirect(w, r, "/login", http.StatusFound)
 	}
 }
