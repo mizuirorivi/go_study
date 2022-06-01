@@ -22,7 +22,7 @@ func generateCode(num int) string {
 }
 
 func Register(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("method:", r.Method)
+	fmt.Println("register method:", r.Method)
 	if r.Method == "GET" {
 		t, _ := template.ParseFiles("pages/register.gtpl")
 		t.Execute(w, nil)

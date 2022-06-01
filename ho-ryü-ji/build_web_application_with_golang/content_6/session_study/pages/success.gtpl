@@ -4,6 +4,8 @@
 </head>
 <body>
 <a> success to login </a>
-<button id="logout" type="button" href="/logout?sessionid={{ .sessionid }}">Logout</button>
+<form action="/logout" method="post">
+    <button name="logout" value="logout">Logout</button>
+</form>
 </body>
 </html>

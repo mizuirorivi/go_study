@@ -16,7 +16,7 @@ func ViewLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func Login(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("method:", r.Method)
+	fmt.Println("login method:", r.Method)
 	if r.Method == "GET" {
 		sessionid, err := r.Cookie("sessionid")
 		if err != nil && sessionid == nil {

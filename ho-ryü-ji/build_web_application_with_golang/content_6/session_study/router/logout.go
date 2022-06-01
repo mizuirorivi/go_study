@@ -10,17 +10,18 @@ import (
 )
 
 func Logout(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("method:", r.Method)
+	fmt.Println("logout method:", r.Method)
+	if r.Method == "POST" {
+		sessionid, err := r.Cookie("sessionid")
+		if err != nil {
+			log.Fatal(err)
+		}
+		sessionid.MaxAge = -1
+		http.SetCookie(w, sessionid)
 
-	sessionid, err := r.Cookie("sessionid")
-	if err != nil {
-		log.Fatal(err)
+		db.Delete(sessionid.Value)
+
+		t, _ := template.ParseFiles("pages/login.gtpl")
+		t.Execute(w, nil)
 	}
-	sessionid.MaxAge = -1
-	http.SetCookie(w, sessionid)
-
-	db.Delete(sessionid.Value)
-
-	t, _ := template.ParseFiles("pages/login.gtpl")
-	t.Execute(w, nil)
 }
