@@ -17,8 +17,8 @@ func ViewLogin(w http.ResponseWriter, r *http.Request) {
 
 func Login(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("login method:", r.Method)
+	sessionid, err := r.Cookie("sessionid")
 	if r.Method == "GET" {
-		sessionid, err := r.Cookie("sessionid")
 		if err != nil && sessionid == nil {
 			ViewLogin(w, r)
 			return
@@ -28,18 +28,25 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			_, err := db.Get(sessionid.Value)
 			if err != nil {
 				if err == sql.ErrNoRows {
-					http.Redirect(w, r, "/register", http.StatusTemporaryRedirect)
+					t, _ := template.ParseFiles("pages/login.gtpl")
+					t.Execute(w, nil)
 					return
 				}
 				log.Fatal(err)
 			}
+			http.Redirect(w, r, "/success", http.StatusTemporaryRedirect)
 		}
 
-		http.Redirect(w, r, "/success", http.StatusTemporaryRedirect)
-
-	} else {
+	} else if r.Method == "POST" {
 		r.ParseForm()
 		fmt.Println("username:", r.Form["username"])
 		fmt.Println("password:", r.Form["password"])
+
+		user, err := db.Get(sessionid.Value)
+		if err != nil {
+			log.Fatal(err)
+		} else if user.Name == r.Form["username"][0] && user.Password == r.Form["password"][0] {
+			http.Redirect(w, r, "/success", http.StatusFound)
+		}
 	}
 }

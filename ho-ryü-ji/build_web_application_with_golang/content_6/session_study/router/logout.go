@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"text/template"
 
 	"github.com/ho-ryue-ji/session_study/db"
 )
@@ -21,7 +20,6 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 
 		db.Delete(sessionid.Value)
 
-		t, _ := template.ParseFiles("pages/login.gtpl")
-		t.Execute(w, nil)
+		http.Redirect(w, r, "/login", http.StatusFound)
 	}
 }
