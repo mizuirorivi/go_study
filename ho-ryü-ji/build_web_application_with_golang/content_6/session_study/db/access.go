@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -76,5 +77,30 @@ func (user *User) Set() error {
 	if err != nil {
 		log.Fatal(err)
 	}
+	return nil
+}
+
+func Delete(sessionid string) error {
+	db, err := sql.Open("sqlite3", "./user.db")
+	if err != nil {
+		log.Fatal(err)
+	}
+	stmt, err := db.Prepare("delete from user where sessionid = ?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	res, err := stmt.Exec(sessionid)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	a, err := res.RowsAffected()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(a)
+
 	return nil
 }
