@@ -3,6 +3,7 @@
 <title></title>
 </head>
 <body>
+<a>Register</a>
 <form action="/register" method="post">
     ユーザ名:<input type="text" name="username">
     パスワード:<input type="password" name="password">

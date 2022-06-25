@@ -10,42 +10,62 @@ import (
 	"github.com/ho-ryue-ji/session_study/db"
 )
 
-func ViewLogin(w http.ResponseWriter, r *http.Request) {
-	t, _ := template.ParseFiles("pages/login.gtpl")
-	t.Execute(w, nil)
+func LoginBySessionid(w http.ResponseWriter, r *http.Request) (string, error) {
+	sessionid, err := r.Cookie("sessionid")
+	if err != nil || sessionid == nil {
+		return "login", nil
+	}
+
+	if sessionid != nil {
+		_, err := db.Get("SessionId", sessionid.Value)
+		if err != nil {
+			if err == sql.ErrNoRows {
+				return "", err
+			}
+			log.Fatal(err)
+		}
+		return "success", nil
+	} else {
+		return "", err
+	}
 }
 
 func Login(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("login method:", r.Method)
-	sessionid, err := r.Cookie("sessionid")
-	if r.Method == "GET" {
-		if err != nil && sessionid == nil {
-			ViewLogin(w, r)
-			return
-		}
-
-		if sessionid != nil {
-			_, err := db.Get(sessionid.Value)
-			if err != nil {
-				if err == sql.ErrNoRows {
-					t, _ := template.ParseFiles("pages/login.gtpl")
-					t.Execute(w, nil)
-					return
-				}
-				log.Fatal(err)
-			}
+	switch r.Method {
+	case "GET":
+		pageid, err := LoginBySessionid(w, r)
+		switch pageid {
+		case "login":
+			t, _ := template.ParseFiles("pages/login.gtpl")
+			t.Execute(w, nil)
+		case "success":
 			http.Redirect(w, r, "/success", http.StatusTemporaryRedirect)
+		default:
+			log.Fatal(err)
 		}
-
-	} else if r.Method == "POST" {
+	case "POST":
 		r.ParseForm()
 		fmt.Println("username:", r.Form["username"])
 		fmt.Println("password:", r.Form["password"])
 
-		user, err := db.Get(sessionid.Value)
+		user, err := db.Get("name", r.Form["username"][0])
 		if err != nil {
+			if err == sql.ErrNoRows {
+				t, _ := template.ParseFiles("pages/login.gtpl")
+				t.Execute(w, nil)
+				return
+			}
 			log.Fatal(err)
-		} else if user.Name == r.Form["username"][0] && user.Password == r.Form["password"][0] {
+		} else if user.Life == 0 {
+			fmt.Println("This accoount has been deleted.")
+			t, _ := template.ParseFiles("pages/login.gtpl")
+			t.Execute(w, nil)
+		} else if user.Password == r.Form["password"][0] {
+			sessionid := CookieSetting(w)
+			fmt.Println("session_id:", sessionid)
+			user.SessionId = sessionid
+			db.Update(sessionid, user)
 			http.Redirect(w, r, "/success", http.StatusFound)
 		}
 	}
