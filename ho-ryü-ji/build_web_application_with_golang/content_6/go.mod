@@ -1,4 +1,4 @@
-module "github.com/ho-ryue-ji/session"
+module "github.com/ho-ryu-ji/session"
 
 go 1.17
 

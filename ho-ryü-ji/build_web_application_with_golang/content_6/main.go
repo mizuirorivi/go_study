@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	"github.com/ho-ryue-ji/session/router"
+	"github.com/ho-ryu-ji/session/router"
 )
 
 func main() {

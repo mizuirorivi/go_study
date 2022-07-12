@@ -1,4 +1,4 @@
-module github.com/ho-ryue-ji/session_study
+module "github.com/ho-ryue-ji/session_study"
 
 go 1.18
 
